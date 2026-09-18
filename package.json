@@ -54,7 +54,10 @@
       "shortcutName": "SmartShule"
     },
     "mac": {
-      "target": ["dmg", "zip"],
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "icon": "public/icon.icns",
       "category": "public.app-category.education"
     },
@@ -110,8 +113,8 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
-    "embla-carousel-react": "^8.6.0",
     "electron-updater": "^6.3.9",
+    "embla-carousel-react": "^8.6.0",
     "exceljs": "^4.4.0",
     "framer-motion": "^12.23.2",
     "input-otp": "^1.4.2",
@@ -143,6 +146,7 @@
     "zustand": "^5.0.6"
   },
   "devDependencies": {
+    "@types/node": "^26.6.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "bun-types": "^1.3.4",
