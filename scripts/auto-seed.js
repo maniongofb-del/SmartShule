@@ -1,5 +1,4 @@
-﻿// SmartShule - Auto-seed
-const { PrismaClient } = require('@prisma/client');
+﻿const { PrismaClient } = require('@prisma/client');
 const crypto = require('crypto');
 const prisma = new PrismaClient();
 
@@ -19,7 +18,7 @@ async function main() {
   if (schoolCount > 0) { console.log('Base deja peuplee. Skip.'); return; }
   console.log('Base vide - demarrage du seed...');
 
-  const school = await prisma.school.create({ data: { name: 'Institution SmartShule', slogan: 'SmartShule - L intelligence qui rapproche l ecole et la famille.', primaryColor: '#2563EB', secondaryColor: '#0F766E', tertiaryColor: '#F59E0B', currency: 'CDF', locale: 'fr-FR' } });
+  const school = await prisma.school.create({ data: { name: 'Institution SmartShule', slogan: 'L intelligence qui rapproche l ecole et la famille.', primaryColor: '#2563EB', secondaryColor: '#0F766E', tertiaryColor: '#F59E0B', currency: 'CDF', locale: 'fr-FR' } });
   await prisma.branding.create({ data: { schoolId: school.id, status: 'PUBLISHED', version: 1, primaryColor: '#2563EB', secondaryColor: '#0F766E', tertiaryColor: '#F59E0B', schoolName: 'Institution SmartShule', slogan: 'SmartShule', publishedAt: new Date() } });
   const year = await prisma.academicYear.create({ data: { schoolId: school.id, label: '2025-2026', startDate: new Date('2025-09-01'), endDate: new Date('2026-07-15'), active: true } });
   const dirP = await prisma.directorate.create({ data: { schoolId: school.id, name: 'Primaire', code: 'PRI' } });
@@ -38,6 +37,7 @@ async function main() {
   await prisma.enrollment.create({ data: { studentId: stu.id, classroomId: sixA.id, academicYearId: year.id, status: 'ACTIVE' } });
   await prisma.guardianStudentLink.create({ data: { guardianId: guard.id, studentId: stu.id, relationship: 'PERE', isPrimary: true } });
   await prisma.announcement.create({ data: { schoolId: school.id, title: 'Bienvenue', content: 'Bienvenue dans SmartShule.', targetType: 'ALL', status: 'PUBLISHED', priority: 'NORMAL', publishedAt: new Date(), authorId: uDir.id } });
+  
   const accounts = [
     { n: '530000', l: 'Caisse', c: 'TREASURY', t: 'ASSET', d: 'DEBIT', tr: true },
     { n: '510000', l: 'Banque', c: 'TREASURY', t: 'ASSET', d: 'DEBIT', tr: true },
@@ -58,6 +58,7 @@ async function main() {
   for (const a of accounts) {
     await prisma.chartOfAccount.create({ data: { schoolId: school.id, accountNumber: a.n, accountLabel: a.l, accountClass: a.n[0], accountCategory: a.c, accountType: a.t, direction: a.d, isProductAccount: a.pr||false, isTaxAccount: a.ta||false, isTreasuryAccount: a.tr||false, isCustomerAccount: a.cu||false, isSupplierAccount: a.su||false, status: 'ACTIVE' } });
   }
+  
   const journals = [
     { c: 'VE-SCO', l: 'Ventes scolaires', t: 'SALES' }, { c: 'VE-SAL', l: 'Ventes salles', t: 'SALES' },
     { c: 'VE-VEH', l: 'Ventes vehicules', t: 'SALES' }, { c: 'CAIS', l: 'Caisse', t: 'CASH' },
@@ -67,7 +68,9 @@ async function main() {
   for (const j of journals) {
     await prisma.accountingJournal.create({ data: { schoolId: school.id, code: j.c, label: j.l, journalType: j.t, status: 'ACTIVE' } });
   }
+  
   await prisma.notification.create({ data: { userId: uDir.id, type: 'ANNOUNCEMENT', title: 'Bienvenue', message: 'SmartShule est configure.', read: false } });
   console.log('Seed termine !');
 }
+
 main().then(() => prisma.$disconnect()).catch((e) => { console.error('Erreur:', e); prisma.$disconnect(); process.exit(0); });
